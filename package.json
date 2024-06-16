@@ -1,0 +1,15 @@
+{
+  "name": "running-app",
+  "version": "1.0.0",
+  "description": "Running Web-app which utilises Node and React and creates loops for users using Google Maps API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

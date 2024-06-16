@@ -4,11 +4,14 @@
 }
 
 .flex-title {
+    display: flex;
     color: rgb(137, 252, 115);
     font-size: 200px;
     font-family: sans-serif;
+    text-align: center;
 }
 
 .flex-field {
-    color: 
+    display: flex;
+    font-size: 50px;
 }
