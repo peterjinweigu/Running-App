@@ -1,0 +1,112 @@
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: black;
+  height: 100vh; /* Ensure body takes full viewport height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+
+
+/** Different Screens **/
+.StartMenu {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/** Title **/
+h1 {
+  font-size: 3rem;
+  margin: 0;
+  font-weight: 300;
+  letter-spacing: 0.67rem;
+  color: white;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.7));
+}
+
+/** Start Button **/
+.start-button {
+  background-color: #0e0e0e;
+  color: rgb(145, 145, 145);
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 20px;
+  border-radius: 5px;
+}
+
+.start-button:hover {
+  background-color: #242424;
+}
+
+/** Logo — for the time being it's just gonna sit at the bottom 
+of the screen, but ideally used for loading screen? making can make it breathing **/
+.logo {
+  position: absolute;
+  bottom: 0;
+  width: 7em;
+  height: 7em;
+  margin: 20px 0;
+  /* Temporary fix for if window is too small and logo covers start button */
+  z-index: -1;
+  animation: breathing 4s ease-in-out infinite;
+}
+
+@keyframes breathing {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+  }
+  50% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 13px rgba(255, 255, 255, 0.7));
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+  }
+}
+
+
+
+.ConfigMenu {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/** Config Button **/
+
+.ConfigMenu {
+  display: flex;
+  gap: 10px;
+}
+
+.config-button {
+  background-color: #0e0e0e;
+  color: rgb(145, 145, 145);
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 20px;
+  border-radius: 5px;
+}
+
+.config-button:hover {
+  background-color: #242424;
+}
