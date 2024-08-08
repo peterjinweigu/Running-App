@@ -1,18 +1,18 @@
 // algo.js
 
 // API KEY (REPLACE WITH DUMMY WHEN PUSHING)
-SECRET_KEY = "SOMERANDOMKEY";
+SECRET_KEY = "DUMMY_KEY";
 
 // static class members
 // reminder latitude should bounce back at limits
 // and longitude should wrap around 
-meterToLat = 1/(1852*60);
-maxLat = 90;
-minLat = -90
+const meterToLat = 1/(1852*60);
+const maxLat = 90;
+const minLat = -90
 
-meterToLong = 1/(1852*60);
-maxLong = 180;
-minLong = -180;
+const meterToLong = 1/(1852*60);
+const maxLong = 180;
+const minLong = -180;
 
 /**
  * returns set of most fit points for given starting point
@@ -21,7 +21,7 @@ minLong = -180;
  * @param {*} long 
  * @param {*} distance 
  */
-function getRoute(lat, long, distance) {
+async function getRoute(lat, long, distance) {
     
     let lengthPlusWidth = distance/2;
     let bestRoute = [];
@@ -44,11 +44,11 @@ function getRoute(lat, long, distance) {
                 let yShift = Math.sin(rad) * displacements[angleShift/45]; 
                 pts.push(createNewPoint(lat, long, xShift, yShift));
             }
-            let actualDistance = queryDistance(pts);
+            let actualDistance = await queryDistance(pts);
 
             if (actualDistance == -1) continue;
             
-            if (getErrorMargin(actualDistance) < getErrorMargin(bestRouteLength)) {
+            if (getErrorMargin(distance, actualDistance) < getErrorMargin(distance, bestRouteLength)) {
                 bestRouteLength = actualDistance;
                 bestRoute = pts;
             }
@@ -93,39 +93,72 @@ function getErrorMargin(expected, actual) {
  * google maps routes api
  * @param {*} points 
  */
-function queryDistance(points) {
-    
-    // Extract origin, waypoints, and destination
-    const origin = `${points[0][0]},${points[0][1]}`;
-    const destination = `${points[points.length - 1][0]},${points[points.length - 1][1]}`;
-    const waypoints = points.slice(1, -1).map(point => `${point[0]},${point[1]}`).join('|');
-    
-    // Construct the URL
-    const url = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin}&destination=${destination}&waypoints=${waypoints}&key=${SECRET_KEY}`;
-    
-    // Make the request
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok ' + response.statusText);
+async function queryDistance(points) {
+
+    console.log(points);
+
+    // Fetch POST
+    try {
+        const response = await fetch("https://routes.googleapis.com/directions/v2:computeRoutes", {
+            method: "post",
+            body: JSON.stringify({
+                "origin":{
+                    "location":{
+                        "latLng":{
+                            "latitude": points[0][0],
+                            "longitude": points[0][1]
+                        }
+                    },
+                },
+                "destination":{
+                    "location":{
+                        "latLng":{
+                            "latitude": points[0][0],
+                            "longitude": points[0][1]
+                        }
+                    }
+                },
+                "intermediates": convertPointsJson(points),
+                "travelMode": "WALK",
+                "computeAlternativeRoutes": false,
+                "languageCode": "en-US",
+                "units": "IMPERIAL"
+            }),
+            headers: {
+                'Content-Type' : 'application/json',
+                'X-Goog-Api-Key' : SECRET_KEY,
+                'X-Goog-FieldMask' : 'routes.distanceMeters'
             }
-            return response.json();
-        })
-        .then(data => {
-            // Extract and print the distance
-            const routes = data.routes;
-            if (routes && routes.length > 0) {
-                const legs = routes[0].legs;
-                const totalDistance = legs.reduce((sum, leg) => sum + leg.distance.value, 0); // distance in meters
-                return totalDistance;
-            } else {
-                return -1;
-            }
-        })
-        .catch(error => {
-            console.log("FUCK");
-            return -1;
         });
+        const result = await response.json();
+        console.log(result);
+        const ret = result.routes.distanceMeters;
+        return ret;
+    } catch (error) {
+        console.log("Error: ", error);
+        return -1;
+    }
+}
+
+/**
+ * returns jsonified points formatted for google maps api
+ * @param {*} points 
+ * @returns 
+ */
+function convertPointsJson(points) {
+    ret = [];
+    points.forEach((point) => {
+        ret.push({
+            "location":{
+                "latLng":{
+                    "latitude": point[0],
+                    "longitude": point[1]
+                }
+            },
+            "via": true
+        })
+    })
+    return ret;
 }
 
 module.exports = {

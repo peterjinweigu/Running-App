@@ -8,7 +8,9 @@ const PORT = 3000;
 const app = express();
 
 app.get("/api", (req, res) => {
-  res.json({ message: algo.getRoute(50, 50, 5000)});
+  algo.getRoute(43.47389747055288, -80.54434334162293, 1000).then(data => {
+    // res.send(data);
+  })
 });
 
 app.listen(PORT, () => {
