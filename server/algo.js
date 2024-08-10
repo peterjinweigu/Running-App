@@ -1,7 +1,10 @@
 // algo.js
 
 // API KEY (REPLACE WITH DUMMY WHEN PUSHING)
-SECRET_KEY = "DUMMY_KEY";
+ROUTES_KEY = "DUMMY_KEY";
+// Pretty sure this key is not vulnerable, maybe put on frontend
+EMBED_KEY = "DUMMY_KEY";
+
 
 // static class members
 // reminder latitude should bounce back at limits
@@ -47,7 +50,10 @@ async function getRoute(lat, long, distance) {
             let actualDistance = await queryDistance(pts);
 
             if (actualDistance == -1) continue;
-            
+
+            // console.log(getErrorMargin(distance, actualDistance));
+            // console.log(getErrorMargin(distance, bestRouteLength));
+
             if (getErrorMargin(distance, actualDistance) < getErrorMargin(distance, bestRouteLength)) {
                 bestRouteLength = actualDistance;
                 bestRoute = pts;
@@ -85,7 +91,7 @@ function createNewPoint(lat, long, xShift, yShift) {
  * @returns 
  */
 function getErrorMargin(expected, actual) {
-    return (Math.abs(expected-actual)*100)/expected;
+    return Math.abs(expected-actual);
 }
 
 /**
@@ -126,13 +132,12 @@ async function queryDistance(points) {
             }),
             headers: {
                 'Content-Type' : 'application/json',
-                'X-Goog-Api-Key' : SECRET_KEY,
+                'X-Goog-Api-Key' : ROUTES_KEY,
                 'X-Goog-FieldMask' : 'routes.distanceMeters'
             }
         });
         const result = await response.json();
-        console.log(result);
-        const ret = result.routes.distanceMeters;
+        const ret = parseFloat(result.routes[0].distanceMeters);
         return ret;
     } catch (error) {
         console.log("Error: ", error);

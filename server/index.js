@@ -7,10 +7,14 @@ const PORT = 3000;
 
 const app = express();
 
-app.get("/api", (req, res) => {
-  algo.getRoute(43.47389747055288, -80.54434334162293, 1000).then(data => {
-    // res.send(data);
-  })
+app.get("/api/:lat/:long/:distance", async (req, res) => {
+  var lat = parseFloat(req.params.lat);
+  var long = parseFloat(req.params.long);
+  var distance = parseFloat(req.params.distance);
+  
+  const pts = await algo.getRoute(lat, long, distance);
+
+  res.send(pts);
 });
 
 app.listen(PORT, () => {
