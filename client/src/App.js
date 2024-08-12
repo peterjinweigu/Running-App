@@ -36,22 +36,46 @@ function ConfigMenu() {
 
   const handleStart = () => {
     // Should show page with your location on google maps
+
   };
 
   return (
     <div className="ConfigMenu">
-      <button className="config-button" onClick={ handleStart }>Start</button>
+      <Link to="/route">
+        <button className="config-button" onClick={ handleStart }>Start</button>
+      </Link>
       <button className="config-button">Distance</button>
       <button className="config-button">Type</button>
     </div>
   );
 }
 
+const MapEmbed = async () => {
+  const response = await fetch("http://localhost:3000/api/43.47389747055288/-80.54434334162293/5000", {method: "get"});
+  console.log(response.json());
+  return (
+    <div style={{ width: '80em', height: '40em' }}>
+      <iframe
+        src={ response.json() }
+        width="100%"
+        height="100%"
+        frameBorder="0"
+        style={{ border: 0 }}
+        allowFullScreen=""
+        aria-hidden="false"
+        tabIndex="0"
+        title="Route"
+      ></iframe>
+    </div>
+  );
+};
+
 function App() {
   return (
     <Routes>
       <Route path="/" element={<StartMenu />} />
       <Route path="/configure" element={<ConfigMenu />} />
+      <Route path="/route" element={<MapEmbed />} />
     </Routes>
   );
 }
