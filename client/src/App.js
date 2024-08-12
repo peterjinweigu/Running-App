@@ -51,15 +51,25 @@ function ConfigMenu() {
 }
 
 const MapEmbed = async () => {
-  const response = await fetch("http://localhost:3000/api/43.47389747055288/-80.54434334162293/5000", {method: "get"});
-  console.log(response.json());
+  const [embed, setEmbed] = useState('');
+
+  useEffect(() => {
+    async function getEmbed() {
+      const response = await fetch("http://localhost:3000/api/43.47389747055288/-80.54434334162293/5000", {method: "get"});
+      const data = await response.json();
+      setEmbed(data.embed);
+    };
+    if (!embed) {
+      getEmbed();
+    }
+  }, []);
+  
   return (
     <div style={{ width: '80em', height: '40em' }}>
       <iframe
-        src={ response.json() }
+        src= {embed}
         width="100%"
         height="100%"
-        frameBorder="0"
         style={{ border: 0 }}
         allowFullScreen=""
         aria-hidden="false"
