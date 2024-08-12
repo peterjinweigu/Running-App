@@ -1,10 +1,6 @@
 // algo.js
 
-// API KEY (REPLACE WITH DUMMY WHEN PUSHING)
-ROUTES_KEY = "SECRET_KEY";
-// Pretty sure this key is not vulnerable, maybe put on frontend
-EMBED_KEY = "SECRET_KEY";
-
+const KEYS = require("./key.js");
 
 // reminder latitude should bounce back at limits
 // and longitude should wrap around 
@@ -131,7 +127,7 @@ async function queryDistance(points) {
             }),
             headers: {
                 'Content-Type' : 'application/json',
-                'X-Goog-Api-Key' : ROUTES_KEY,
+                'X-Goog-Api-Key' : KEYS.ROUTES_KEY,
                 'X-Goog-FieldMask' : 'routes.distanceMeters'
             }
         });
@@ -174,7 +170,7 @@ function getEmbed(points) {
     let str = "https://www.google.com/maps/embed/v1/directions";
 
     // add the key
-    str += "?key=" + EMBED_KEY;
+    str += "?key=" + KEYS.EMBED_KEY;
     str += "&origin=" + points[0][0] + "," + points[0][1];
     str += "&destination=" + points[0][0] + "," + points[0][1];
     str += "&waypoints=";
