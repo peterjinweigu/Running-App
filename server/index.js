@@ -14,7 +14,7 @@ app.get("/api/:lat/:long/:distance", async (req, res) => {
   
   const pts = await algo.getRoute(lat, long, distance);
 
-  res.send(pts);
+  res.send(algo.getEmbed(pts));
 });
 
 app.listen(PORT, () => {

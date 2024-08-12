@@ -1,12 +1,11 @@
 // algo.js
 
 // API KEY (REPLACE WITH DUMMY WHEN PUSHING)
-ROUTES_KEY = "DUMMY_KEY";
+ROUTES_KEY = "SECRET_KEY";
 // Pretty sure this key is not vulnerable, maybe put on frontend
-EMBED_KEY = "DUMMY_KEY";
+EMBED_KEY = "SECRET_KEY";
 
 
-// static class members
 // reminder latitude should bounce back at limits
 // and longitude should wrap around 
 const meterToLat = 1/(1852*60);
@@ -166,6 +165,33 @@ function convertPointsJson(points) {
     return ret;
 }
 
+/**
+ * returns google maps embed link
+ * @param {*} points 
+ * @returns 
+ */
+function getEmbed(points) {
+    let str = "https://www.google.com/maps/embed/v1/directions";
+
+    // add the key
+    str += "?key=" + EMBED_KEY;
+    str += "&origin=" + points[0][0] + "," + points[0][1];
+    str += "&destination=" + points[0][0] + "," + points[0][1];
+    str += "&waypoints=";
+
+    points.forEach((point) => {
+        str += point[0] + "," + point[1] + "|";
+    })
+
+    str = str.substring(0, str.length-2);
+
+    str += "&mode=walking";
+    str += "&units=metric";
+
+    return str;
+}
+
 module.exports = {
-    getRoute: getRoute
+    getRoute: getRoute,
+    getEmbed: getEmbed
 };
