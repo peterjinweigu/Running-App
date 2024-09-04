@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState} from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import './App.css';
 import logo from './assets/runner.png';
@@ -50,19 +50,25 @@ function ConfigMenu() {
   );
 }
 
-const MapEmbed = async () => {
+const MapEmbed = () => {
   const [embed, setEmbed] = useState('');
 
   useEffect(() => {
     async function getEmbed() {
+      setEmbed('');
       const response = await fetch("http://localhost:3000/api/43.47389747055288/-80.54434334162293/5000", {method: "get"});
       const data = await response.json();
-      setEmbed(data.embed);
+      if (!flag) {
+        setEmbed(data.embed);
+      }
     };
-    if (!embed) {
-      getEmbed();
+
+    let flag = false;
+    getEmbed();
+    return () => {
+      flag = true;
     }
-  }, []);
+  }, [embed]);
   
   return (
     <div style={{ width: '80em', height: '40em' }}>
