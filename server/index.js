@@ -3,7 +3,7 @@
 const express = require("express");
 const algo = require("./algo.js");
 
-const PORT = 3000;
+const PORT = 5000;
 
 const app = express();
 
