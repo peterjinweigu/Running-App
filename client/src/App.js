@@ -68,7 +68,7 @@ const MapEmbed = () => {
     return () => {
       flag = true;
     }
-  }, [embed]);
+  }, []);
   
   return (
     <div style={{ width: '80em', height: '40em' }}>
