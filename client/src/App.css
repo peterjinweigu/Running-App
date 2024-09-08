@@ -12,6 +12,19 @@ body {
   -ms-user-select: none;
 }
 
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: black;
+}
+
+.loading p {
+  color: white;
+  font-size: 20px;
+  width: 8em;
+}
 
 /** Different Screens **/
 .StartMenu {
@@ -97,17 +110,8 @@ of the screen, but ideally used for loading screen? making can make it breathing
 .back-button {
   position: absolute;
   top: 2em;
-  left: 2em;
+  left: 3em;
   z-index: 1;
-}
-
-.trigger-button {
-  padding: 10px 20px;
-  background-color: #a07b7b;
-  color: rgb(145, 145, 145);
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
 }
 
 .popup-overlay {
@@ -124,7 +128,7 @@ of the screen, but ideally used for loading screen? making can make it breathing
 }
 
 .popup-content {
-  background: #0e0e0e;
+  background: #000000;
   color: rgb(145, 145, 145);
   width: 20em;
   height: 20em;
@@ -138,7 +142,7 @@ of the screen, but ideally used for loading screen? making can make it breathing
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
 }
 
 .popup-content input {
@@ -150,12 +154,6 @@ of the screen, but ideally used for loading screen? making can make it breathing
 
 .popup-content button {
   margin: 5px;
-  padding: 10px;
-  background-color: #0e0e0e;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
 }
 
 .popup-content button:hover {

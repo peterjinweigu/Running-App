@@ -1,7 +1,20 @@
-import React, { useEffect, useState} from 'react';
+import React, { useContext, createContext, useEffect, useState} from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import './App.css';
 import logo from './assets/runner.png';
+
+// For allowing user to enter distance
+export const DistanceContext = createContext();
+
+export const DistanceProvider = ({ children }) => {
+  const [distance, setDistance] = useState(5000);
+
+  return (
+    <DistanceContext.Provider value={{ distance, setDistance }}>
+      {children}
+    </DistanceContext.Provider>
+  );
+};
 
 function StartMenu() {
   return (
@@ -16,8 +29,8 @@ function StartMenu() {
 }
 
 function ConfigMenu() {
+  const { distance, setDistance } = useContext(DistanceContext);
   const [isPopupVisible, setPopupVisible] = useState(false);
-  const [distance, setDistance] = useState('');
   // Set all buttons to equal width (equal to longest button)
   // useEffect(() => {
   //   const buttons = document.querySelectorAll('.config-button');
@@ -40,10 +53,6 @@ function ConfigMenu() {
     setPopupVisible(true);
   };
 
-  const handlePopupClose = () => {
-    setPopupVisible(false);
-  };
-
   const handleDistanceChange = (e) => {
     setDistance(e.target.value);
   };
@@ -53,7 +62,7 @@ function ConfigMenu() {
     setPopupVisible(false);
   };
   
-  const enterType = () => {
+  const enterSettings = () => {
 
   };
 
@@ -72,61 +81,107 @@ function ConfigMenu() {
             <input
               type="text"
               value={distance}
-              onChange={handleDistanceChange}
+              onChange={ handleDistanceChange }
               placeholder="Enter distance"
             />
-            <button className="popup-button" onClick={ handleSubmit }>Submit</button>
-            <button className="popup-button" onClick={ handlePopupClose }>x</button>
+            <button className="popup-button" onClick={ handleSubmit }>Ok</button>
           </div>
         </div>
       )}
       </div>
-      <button className="config-button" onClick={ enterType }>Settings</button>
+      <button className="config-button" onClick={ enterSettings }>Settings</button>
     </div>
   );
 }
 
 const MapEmbed = () => {
   const [embed, setEmbed] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState('generating path');
+  const { distance } = useContext(DistanceContext);
 
-  // useEffect(() => {
-  //   async function getEmbed() {
-  //     setEmbed('');
-  //     const response = [
-  //       [ 43.47389747055288, -80.54434334162293 ],
-  //       [ 43.46939783052408, -80.54434334162293 ],
-  //       [ 43.46117056664383, -80.55707024553197 ],
-  //       [ 43.47389747055288, -80.56289583273892 ]
-  //     ]; //await fetch("http://localhost:5000/api/43.47389747055288/-80.54434334162293/5000", {method: "get"});
-  //     const data = await response.json();
-  //     if (!flag) {
-  //       setEmbed(data.embed);
-  //     }
-  //   };
+  useEffect(() => {
+    async function getEmbed() {
+      setEmbed('');
+      setLoading(true);
+      // Add loading running man (animated running man with "generating path...")
 
-  //   let flag = false;
-  //   getEmbed();
-  //   return () => {
-  //     flag = true;
-  //   }
-  // }, []);
+      const getLocation = () => {
+        return new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              resolve({ latitude, longitude });
+            },
+            (err) => {
+              reject(new Error('Error getting location: ' + err.message));
+            }
+          );
+        });
+      };
+
+      try {
+        //await new Promise((resolve) => setTimeout(resolve, 3000)); // mock api call
+        const { latitude, longitude } = await getLocation(); 
+        console.log(distance)
+        const response = await fetch(`http://localhost:5000/api/${latitude}/${longitude}/${distance}`, {method: 'get'});
+        const data = await response.json();
+        if (!flag) {
+          setEmbed(data.embed);
+        }
+
+      } catch(error) {
+        console.error("Error generating loop:", error)
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    let flag = false;
+    getEmbed();
+    return () => {
+      flag = true;
+    }
+  }, [distance]);
+
+  // // Animated loading text
+  useEffect(() => {
+    if (loading) {
+      const interval = setInterval(() => {
+        setLoadingText((prev) => {
+          if (prev === 'generating path') return 'generating path.';
+          if (prev === 'generating path.') return 'generating path..';
+          if (prev === 'generating path..') return 'generating path...';
+          return 'generating path';
+        });
+      }, 500); // Change text every 500ms
+
+      return () => clearInterval(interval); // Cleanup interval on unmount
+    }
+  }, [loading]);
   
   return (
     <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
       <Link to="/configure">
         <button className="back-button">Back</button>
       </Link>
-      <div style={{ width: '80em', height: '40em' }}>
-        <iframe
-          src= {embed}
-          width="100%"
-          height="100%"
-          style={{ border: 0 }}
-          allowFullScreen=""
-          aria-hidden="false"
-          tabIndex="0"
-          title="Route"
-        ></iframe>
+      <div className='loading'>
+        {loading ? (
+          <p>{loadingText}</p>
+        ) : (
+          <div style={{ width: '80rem', height: '40rem' }}>
+            <iframe
+              src= {embed}
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen=""
+              aria-hidden="false"
+              tabIndex="0"
+              title="Route"
+            ></iframe>
+          </div>
+        )}
       </div>
     </div>
   );
