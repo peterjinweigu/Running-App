@@ -16,6 +16,8 @@ function StartMenu() {
 }
 
 function ConfigMenu() {
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [distance, setDistance] = useState('');
   // Set all buttons to equal width (equal to longest button)
   // useEffect(() => {
   //   const buttons = document.querySelectorAll('.config-button');
@@ -34,18 +36,52 @@ function ConfigMenu() {
   //   });
   // }, []);
 
-  const handleStart = () => {
-    // Should show page with your location on google maps
+  const enterDistance = () => {
+    setPopupVisible(true);
+  };
+
+  const handlePopupClose = () => {
+    setPopupVisible(false);
+  };
+
+  const handleDistanceChange = (e) => {
+    setDistance(e.target.value);
+  };
+
+  const handleSubmit = () => {
+    console.log('Entered distance:', distance);
+    setPopupVisible(false);
+  };
+  
+  const enterType = () => {
 
   };
 
   return (
     <div className="ConfigMenu">
       <Link to="/route">
-        <button className="config-button" onClick={ handleStart }>Start</button>
+        <button className="config-button">Start</button>
       </Link>
-      <button className="config-button">Distance</button>
-      <button className="config-button">Type</button>
+      <div>
+      <button className="config-button" onClick={ enterDistance }>Distance</button>
+      
+      {isPopupVisible && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <p>Enter Distance</p>
+            <input
+              type="text"
+              value={distance}
+              onChange={handleDistanceChange}
+              placeholder="Enter distance"
+            />
+            <button className="popup-button" onClick={ handleSubmit }>Submit</button>
+            <button className="popup-button" onClick={ handlePopupClose }>x</button>
+          </div>
+        </div>
+      )}
+      </div>
+      <button className="config-button" onClick={ enterType }>Settings</button>
     </div>
   );
 }
@@ -53,35 +89,45 @@ function ConfigMenu() {
 const MapEmbed = () => {
   const [embed, setEmbed] = useState('');
 
-  useEffect(() => {
-    async function getEmbed() {
-      setEmbed('');
-      const response = await fetch("http://localhost:3000/api/43.47389747055288/-80.54434334162293/5000", {method: "get"});
-      const data = await response.json();
-      if (!flag) {
-        setEmbed(data.embed);
-      }
-    };
+  // useEffect(() => {
+  //   async function getEmbed() {
+  //     setEmbed('');
+  //     const response = [
+  //       [ 43.47389747055288, -80.54434334162293 ],
+  //       [ 43.46939783052408, -80.54434334162293 ],
+  //       [ 43.46117056664383, -80.55707024553197 ],
+  //       [ 43.47389747055288, -80.56289583273892 ]
+  //     ]; //await fetch("http://localhost:5000/api/43.47389747055288/-80.54434334162293/5000", {method: "get"});
+  //     const data = await response.json();
+  //     if (!flag) {
+  //       setEmbed(data.embed);
+  //     }
+  //   };
 
-    let flag = false;
-    getEmbed();
-    return () => {
-      flag = true;
-    }
-  }, []);
+  //   let flag = false;
+  //   getEmbed();
+  //   return () => {
+  //     flag = true;
+  //   }
+  // }, []);
   
   return (
-    <div style={{ width: '80em', height: '40em' }}>
-      <iframe
-        src= {embed}
-        width="100%"
-        height="100%"
-        style={{ border: 0 }}
-        allowFullScreen=""
-        aria-hidden="false"
-        tabIndex="0"
-        title="Route"
-      ></iframe>
+    <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
+      <Link to="/configure">
+        <button className="back-button">Back</button>
+      </Link>
+      <div style={{ width: '80em', height: '40em' }}>
+        <iframe
+          src= {embed}
+          width="100%"
+          height="100%"
+          style={{ border: 0 }}
+          allowFullScreen=""
+          aria-hidden="false"
+          tabIndex="0"
+          title="Route"
+        ></iframe>
+      </div>
     </div>
   );
 };

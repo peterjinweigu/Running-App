@@ -33,8 +33,7 @@ h1 {
   filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.7));
 }
 
-/** Start Button **/
-.start-button {
+button {
   background-color: #0e0e0e;
   color: rgb(145, 145, 145);
   border: none;
@@ -45,7 +44,7 @@ h1 {
   border-radius: 5px;
 }
 
-.start-button:hover {
+button:hover {
   background-color: #242424;
 }
 
@@ -95,7 +94,75 @@ of the screen, but ideally used for loading screen? making can make it breathing
   gap: 10px;
 }
 
-.config-button {
+.back-button {
+  position: absolute;
+  top: 2em;
+  left: 2em;
+  z-index: 1;
+}
+
+.trigger-button {
+  padding: 10px 20px;
+  background-color: #a07b7b;
+  color: rgb(145, 145, 145);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 30em;
+  height: 20em;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: #0e0e0e;
+  color: rgb(145, 145, 145);
+  width: 20em;
+  height: 20em;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+}
+
+.popup-content input {
+  margin: 10px 0;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+}
+
+.popup-content button {
+  margin: 5px;
+  padding: 10px;
+  background-color: #0e0e0e;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.popup-content button:hover {
+  background-color: #242424; 
+}
+
+.popup-button {
   background-color: #0e0e0e;
   color: rgb(145, 145, 145);
   border: none;
@@ -106,6 +173,6 @@ of the screen, but ideally used for loading screen? making can make it breathing
   border-radius: 5px;
 }
 
-.config-button:hover {
+.popup-button:hover {
   background-color: #242424;
 }
