@@ -96,7 +96,7 @@ function getErrorMargin(expected, actual) {
  */
 async function queryDistance(points) {
 
-    console.log(points);
+    // console.log(points);
 
     // Fetch POST
     try {
@@ -132,6 +132,7 @@ async function queryDistance(points) {
             }
         });
         const result = await response.json();
+        console.log(result);
         const ret = parseFloat(result.routes[0].distanceMeters);
         return ret;
     } catch (error) {
@@ -168,6 +169,8 @@ function convertPointsJson(points) {
  */
 function getEmbed(points) {
     let str = "https://www.google.com/maps/embed/v1/directions";
+
+    if (points.length == 0) return "ERROR";
 
     // add the key
     str += "?key=" + KEYS.EMBED_KEY;
