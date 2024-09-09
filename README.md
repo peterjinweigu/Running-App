@@ -10,7 +10,7 @@ find new runnings loops which suited their needs, especially in unfamiliar areas
 
 After specifying your inputs, Looper will return a loop which is as close as possible to the desired path.
 
-## Example
+## Example (5km)
 ![image](https://github.com/user-attachments/assets/1158d870-8b70-4541-afd8-2e9571fe47f9)
 
 # Setup
