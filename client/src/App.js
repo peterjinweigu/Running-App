@@ -123,10 +123,8 @@ const MapEmbed = () => {
       try {
         //await new Promise((resolve) => setTimeout(resolve, 3000)); // mock api call
         var { latitude, longitude } = await getLocation(); 
-        latitude = parseFloat(latitude);
-        longitude = parseFloat(longitude);
-        
-        const response = await fetch(`http://localhost:5000/api/${latitude}/${longitude}/${distance}`, {method: 'get'});
+
+        const response = await fetch(`http://localhost:4000/api/${latitude}/${longitude}/${distance}`, {method: 'get'});
         const data = await response.json();
         if (!flag) {
           setEmbed(data.embed);
