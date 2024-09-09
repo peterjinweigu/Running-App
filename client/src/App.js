@@ -97,7 +97,7 @@ function ConfigMenu() {
 const MapEmbed = () => {
   const [embed, setEmbed] = useState('');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(true);
   const [loadingText, setLoadingText] = useState('generating path');
   const { distance } = useContext(DistanceContext);
 
