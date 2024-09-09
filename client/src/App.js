@@ -77,7 +77,7 @@ function ConfigMenu() {
       {isPopupVisible && (
         <div className="popup-overlay">
           <div className="popup-content">
-            <p>Enter Distance</p>
+            <p>Enter Distance (m)</p>
             <input
               type="text"
               value={distance}
@@ -122,14 +122,15 @@ const MapEmbed = () => {
 
       try {
         //await new Promise((resolve) => setTimeout(resolve, 3000)); // mock api call
-        const { latitude, longitude } = await getLocation(); 
-        console.log(distance)
+        var { latitude, longitude } = await getLocation(); 
+        latitude = parseFloat(latitude);
+        longitude = parseFloat(longitude);
+        
         const response = await fetch(`http://localhost:5000/api/${latitude}/${longitude}/${distance}`, {method: 'get'});
         const data = await response.json();
         if (!flag) {
           setEmbed(data.embed);
         }
-
       } catch(error) {
         console.error("Error generating loop:", error)
       } finally {
@@ -171,7 +172,7 @@ const MapEmbed = () => {
         ) : (
           <div style={{ width: '80rem', height: '40rem' }}>
             <iframe
-              src= {embed}
+              src={ embed }
               width="100%"
               height="100%"
               style={{ border: 0 }}

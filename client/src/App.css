@@ -21,7 +21,7 @@ body {
 }
 
 .loading p {
-  color: white;
+  color: rgb(145, 145, 145);
   font-size: 20px;
   width: 8em;
 }
@@ -131,7 +131,7 @@ of the screen, but ideally used for loading screen? making can make it breathing
   background: #000000;
   color: rgb(145, 145, 145);
   width: 20em;
-  height: 20em;
+  height: 13em;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -167,8 +167,8 @@ of the screen, but ideally used for loading screen? making can make it breathing
   padding: 10px 20px;
   font-size: 1rem;
   cursor: pointer;
-  margin-top: 20px;
   border-radius: 5px;
+  transform: translate(0%, 15%);
 }
 
 .popup-button:hover {
