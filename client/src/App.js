@@ -96,17 +96,13 @@ function ConfigMenu() {
 
 const MapEmbed = () => {
   const [embed, setEmbed] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [loadingText, setLoadingText] = useState('generating path');
   const { distance } = useContext(DistanceContext);
 
   useEffect(() => {
     async function getEmbed() {
-      setEmbed('');
-      setLoading(true);
-      // Add loading running man (animated running man with "generating path...")
-
       const getLocation = () => {
         return new Promise((resolve, reject) => {
           navigator.geolocation.getCurrentPosition(
