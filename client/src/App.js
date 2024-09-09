@@ -97,6 +97,7 @@ function ConfigMenu() {
 const MapEmbed = () => {
   const [embed, setEmbed] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [loadingText, setLoadingText] = useState('generating path');
   const { distance } = useContext(DistanceContext);
 
@@ -131,6 +132,7 @@ const MapEmbed = () => {
         }
       } catch(error) {
         console.error("Error generating loop:", error)
+        setError(true);
       } finally {
         setLoading(false);
       }
@@ -165,9 +167,12 @@ const MapEmbed = () => {
         <button className="back-button">Back</button>
       </Link>
       <div className='loading'>
-        {loading ? (
+        {error ? (
+          <p style = {{ width: "10em" }}>Error Loading Route :(</p>
+        ) : loading ? (
           <p>{loadingText}</p>
         ) : (
+
           <div style={{ width: '80rem', height: '40rem' }}>
             <iframe
               src={ embed }
