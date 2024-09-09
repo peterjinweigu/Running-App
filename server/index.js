@@ -4,7 +4,7 @@ const express = require("express");
 const algo = require("./algo.js");
 const cors = require("cors");
 
-const PORT = 5000;
+const PORT = 4000;
 
 const app = express();
 
@@ -17,7 +17,11 @@ app.get("/api/:lat/:long/:distance", async (req, res) => {
   
   const pts = await algo.getRoute(lat, long, distance);
 
-  res.json({embed: algo.getEmbed(pts)});
+  ret = algo.getEmbed(pts);
+
+  if (ret == "ERROR") res.sendStatus(404);
+  else res.json({embed: ret});
+  
 });
 
 app.listen(PORT, () => {
