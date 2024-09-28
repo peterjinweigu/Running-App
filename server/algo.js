@@ -105,7 +105,7 @@ async function snapPoints(points) {
     //     str += point[0] + "," + point[1] + "|";
     // })
 
-    str += point[0][0] + "," + point[0][1];
+    str += points[0][0] + "," + points[0][1];
 
     // str = str.substring(0, str.length-2);
     str += "&key=" + KEYS.ROUTES_KEY;
@@ -146,7 +146,7 @@ async function queryDistance(points) {
 
     // Snap points to nearest roads first, if invalid return -1
     // Get route after snapping to roads, should increase effectivness
-    // points = await snapPoints(points);
+    points = await snapPoints(points);
     if (points === -1) return -1;
 
     // Fetch POST
