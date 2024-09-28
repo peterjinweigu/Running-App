@@ -8,10 +8,18 @@ find new runnings loops which suited their needs, especially in unfamiliar areas
 ## Inputs
 ![image](https://github.com/user-attachments/assets/eb6f00ff-46fd-4a68-be2b-7838f5cf9ad7)
 
-After specifying your inputs, Looper will return a loop which is as close as possible to the desired path.
+After specifying your inputs, Looper will return a loop which is as close as possible to the desired path. The path is generated using a geometric sweep around a hypothetical cartesian plane centered at the starting point. 
 
-## Example (5km)
+## Examples
+### 5km
 ![image](https://github.com/user-attachments/assets/1158d870-8b70-4541-afd8-2e9571fe47f9)
+
+### 2.5km
+![image](https://github.com/user-attachments/assets/7670e817-c383-4c34-9d39-155b588925ff)
+
+
+
+
 
 # Setup
 - Install Node.js and npm on your local machine
