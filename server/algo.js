@@ -44,7 +44,7 @@ async function getRoute(lat, long, distance) {
             }
             let actualDistance = await queryDistance(pts);
 
-            if (actualDistance == -1) continue;
+            if (actualDistance === -1) continue;
 
             // console.log(getErrorMargin(distance, actualDistance));
             // console.log(getErrorMargin(distance, bestRouteLength));
@@ -90,13 +90,64 @@ function getErrorMargin(expected, actual) {
 }
 
 /**
+ * return snapped points (to nearest roads)
+ * @param {*} points 
+ */
+async function snapPoints(points) {
+    let str = "https://roads.googleapis.com/v1/nearestRoads";
+
+    if (points.length == 0) return points;
+
+    str += "?points=";
+
+    // Snapping mutiple points
+    // points.forEach((point) => {
+    //     str += point[0] + "," + point[1] + "|";
+    // })
+
+    str += point[0][0] + "," + point[0][1];
+
+    // str = str.substring(0, str.length-2);
+    str += "&key=" + KEYS.ROUTES_KEY;
+
+    // console.log(points);
+
+    try {
+        const response = await fetch(str);
+        const result = await response.json();
+        
+        // ok this is somewhat backwards, should change later
+        // ret = [];
+        temp = result.snappedPoints;
+
+        // console.log(temp);
+
+        // temp.forEach((point) => {
+        //     ret.push([parseFloat(point.location.latitude), parseFloat(point.location.longitude)]);
+        // });
+
+        points[0] = [parseFloat(temp[0].location.latitude), parseFloat(temp[0].location.longitude)];
+
+        // console.log(ret);
+
+        return points;
+    } catch (error) {
+        console.log("Error: ", error);
+        return -1;
+    }
+}
+
+/**
  * return distance of points by making request to
  * google maps routes api
  * @param {*} points 
  */
 async function queryDistance(points) {
 
-    // console.log(points);
+    // Snap points to nearest roads first, if invalid return -1
+    // Get route after snapping to roads, should increase effectivness
+    // points = await snapPoints(points);
+    if (points === -1) return -1;
 
     // Fetch POST
     try {
@@ -157,8 +208,8 @@ function convertPointsJson(points) {
                 }
             },
             "via": true
-        })
-    })
+        });
+    });
     return ret;
 }
 
