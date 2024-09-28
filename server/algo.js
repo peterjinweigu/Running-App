@@ -1,6 +1,7 @@
 // algo.js
 
 const KEYS = require("./key.js");
+const dataBase = require("./databaseEngine.js");
 
 // reminder latitude should bounce back at limits
 // and longitude should wrap around 
