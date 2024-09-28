@@ -241,6 +241,20 @@ function getEmbed(points) {
     return str;
 }
 
+/**
+ * retrieve a similar route, return -1 if no similar route
+ * @param {*} lat 
+ * @param {*} long 
+ * @param {*} distance 
+ */
+async function retrieveSimilarRoute(lat, long, distance) {
+    // query DB for starting point + distance variation ~ 200m
+    // this is something we can store in the settings (choose variation)
+    // my plan is to get a fireStore (1gb of storage + pretty much enough r/w for us)
+    // call this before iterating in queryDistance
+    // TODO@turtlecuber
+}
+
 module.exports = {
     getRoute: getRoute,
     getEmbed: getEmbed
