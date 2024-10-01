@@ -1,4 +1,4 @@
-// algo.js
+/* server/algo.js */
 
 const KEYS = require("./key.js");
 const dataBase = require("./databaseEngine.js");
