@@ -1,8 +1,8 @@
 /* server/databaseEngine.js */
 
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+const { initializeApp } = require("firebase/app");
+const { getFirestore } = require("firebase/firestore");
 // import { getAnalytics } from "firebase/analytics";
 
 const KEYS = require("./key.js");
