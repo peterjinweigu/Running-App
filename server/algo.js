@@ -14,6 +14,13 @@ const maxLong = 180;
 const minLong = -180;
 
 /**
+ * Reminder: Route randomization + upgrades to geometry
+ * - Randomize distance 
+ * - Starting point variance
+ * - More points on sweep?? Finer ratios?
+ */
+
+/**
  * returns set of most fit points for given starting point
  * and distance
  * @param {*} lat 
@@ -252,7 +259,7 @@ async function retrieveSimilarRoute(lat, long, distance) {
     // query DB for starting point + distance variation ~ 200m
     // this is something we can store in the settings (choose variation)
     // my plan is to get a fireStore (1gb of storage + pretty much enough r/w for us)
-    // call this before iterating in queryDistance
+    // call this before api request in queryDistance
     // TODO@turtlecuber
 }
 
