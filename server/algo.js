@@ -56,6 +56,7 @@ async function getRoute(lat, long, distance) {
             }
         }
     }
+    await dataBase.write(bestRouteLength, bestRoute);
 
     return bestRoute;
 }
@@ -184,7 +185,6 @@ async function queryDistance(points) {
             }
         });
         const result = await response.json();
-        console.log(result);
         const ret = parseFloat(result.routes[0].distanceMeters);
         return ret;
     } catch (error) {

@@ -103,7 +103,7 @@ const MapEmbed = () => {
 
   useEffect(() => {
     async function getEmbed() {
-      const getLocation = () => {
+      const getLocation = async () => {
         return new Promise((resolve, reject) => {
           navigator.geolocation.getCurrentPosition(
             (position) => {

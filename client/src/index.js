@@ -6,11 +6,12 @@ import App, { DistanceProvider } from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
     <Router>
       <DistanceProvider>
         <App />
       </DistanceProvider>
     </Router>
-  </React.StrictMode>
 );
+
+// Bring back strict mode for deployment, otherwise its double calling
+// Our backend

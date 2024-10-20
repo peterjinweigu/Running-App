@@ -1,18 +1,26 @@
 /* server/databaseEngine.js */
 
-// Import the functions you need from the SDKs you need
-const { initializeApp } = require("firebase/app");
-const { getFirestore } = require("firebase/firestore");
-// import { getAnalytics } from "firebase/analytics";
-
-const KEYS = require("./key.js");
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+// const KEYS = require("./key.js");
+const serviceAccount = require("./service-account-key.json");
 
 // Initialize Firebase
-const app = initializeApp(KEYS.FIREBASE_CONFIG);
-const dataBase = getFirestore(app);
-// const analytics = getAnalytics(app);
+const admin = require("firebase-admin");
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+});
+const db = admin.firestore();
+
+/**
+ * Data Model
+ * One collection "routes"
+ * One document "loops"
+ * "loops" contains one field
+ * loops: array of loops formatted as JSON
+ * {
+ *      distance: distance
+ *      points: points
+ * }
+ */
 
 /**
  * return suitable match if found
@@ -28,8 +36,29 @@ async function readData() {
  * @param {*} distance 
  * @param {*} points 
  */
-async function writeData(lat, long, distance, points) {
-    return -1;
+async function writeData(distance, points) {
+    // Firestore wants array of JSON unfortunately
+    pts = [];
+    points.forEach((point) => {
+        pts.push({
+            lat: point[0],
+            long: point[1]
+        })
+    })
+    try {
+        const docRef = db.collection("routes").doc("loops");
+        await docRef.update({
+            loops: admin.firestore.FieldValue.arrayUnion(
+                {
+                    distance: distance,
+                    points: pts
+                }
+            )
+        });
+        console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+        console.error("Error adding document: ", e);
+    }
 }
 
 module.exports = {
