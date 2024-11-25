@@ -16,8 +16,14 @@ const minLong = -180;
 /**
  * Reminder: Route randomization + upgrades to geometry
  * - Randomize distance 
+ *   Because we are estimating distances with polygons, we will very oftentimes overestimate
+ *   So the idea is we will randomly choose distances of [0.90, 1.02] of the original distance
+ *   Where the expected value is 0.96 -> an understimate 
  * - Starting point variance
+ *   Give the user the option to randomly adjust starting point
+ *   @TODO Turtlecuber: add option to have variance, default is 0 metres. Add this to get request
  * - More points on sweep?? Finer ratios?
+ *   Think about some geometrical randomization + other stuff
  */
 
 /**
@@ -27,20 +33,30 @@ const minLong = -180;
  * @param {*} long 
  * @param {*} distance 
  */
-async function getRoute(lat, long, distance) {
+async function getRoute(lat, long, distance, variance) {
     
-    let lengthPlusWidth = distance/2;
+    const lengthPlusWidthFinal = distance/2;
     let bestRoute = [];
     let bestRouteLength = 0;
+
+    const randXShift = Math.random() - 0.5;
+    const randYShift = Math.random() - 0.5;
+
+    let newLatLong = createNewPoint(lat, long, variance*randXShift, variance*randYShift);
+    lat = newLatLong[0];
+    long = newLatLong[1];
     
     // basic trig to get x and y given angle
     // around ~60 queries
     for (let ratio = 20; ratio <= 80; ratio += 10) {
-        let length = lengthPlusWidth*ratio/100;
-        let width = lengthPlusWidth*(100-ratio)/100;
-        let hyp = Math.sqrt(length*length + width*width);
+        const randomShift = Math.random() * 0.12 + 0.9;
+        const lengthPlusWidth = lengthPlusWidthFinal*randomShift;
 
-        let displacements = [length, width, hyp];
+        const length = lengthPlusWidth*ratio/100;
+        const width = lengthPlusWidth*(100-ratio)/100;
+        const hyp = Math.sqrt(length*length + width*width);
+
+        const displacements = [length, width, hyp];
         for (let angle = 0; angle < 360; angle += 45) {
             let pts = [[lat, long]];
             for (let angleShift = 0; angleShift <= 90; angleShift += 45) {
@@ -50,7 +66,7 @@ async function getRoute(lat, long, distance) {
                 let yShift = Math.sin(rad) * displacements[angleShift/45]; 
                 pts.push(createNewPoint(lat, long, xShift, yShift));
             }
-            let actualDistance = await queryDistance(pts);
+            const actualDistance = await queryDistance(pts);
 
             if (actualDistance === -1) continue;
 
@@ -63,7 +79,7 @@ async function getRoute(lat, long, distance) {
             }
         }
     }
-    await dataBase.write(bestRouteLength, bestRoute);
+    if (bestRouteLength != 0) await dataBase.write(bestRouteLength, bestRoute);
 
     return bestRoute;
 }
@@ -128,8 +144,6 @@ async function snapPoints(points) {
         // ok this is somewhat backwards, should change later
         // ret = [];
         temp = result.snappedPoints;
-
-        // console.log(temp);
 
         // temp.forEach((point) => {
         //     ret.push([parseFloat(point.location.latitude), parseFloat(point.location.longitude)]);
@@ -251,6 +265,7 @@ function getEmbed(points) {
 
 /**
  * retrieve a similar route, return -1 if no similar route
+ * @TODO Turtlecuber
  * @param {*} lat 
  * @param {*} long 
  * @param {*} distance 
@@ -260,7 +275,6 @@ async function retrieveSimilarRoute(lat, long, distance) {
     // this is something we can store in the settings (choose variation)
     // my plan is to get a fireStore (1gb of storage + pretty much enough r/w for us)
     // call this before api request in queryDistance
-    // TODO@turtlecuber
 }
 
 module.exports = {

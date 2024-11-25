@@ -15,7 +15,7 @@ app.get("/api/:lat/:long/:distance", async (req, res) => {
   var long = parseFloat(req.params.long);
   var distance = parseFloat(req.params.distance);
   
-  const pts = await algo.getRoute(lat, long, distance);
+  const pts = await algo.getRoute(lat, long, distance, 0);
 
   ret = algo.getEmbed(pts);
 
