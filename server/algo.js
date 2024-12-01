@@ -34,10 +34,18 @@ const minLong = -180;
  * @param {*} distance 
  */
 async function getRoute(lat, long, distance, variance) {
-    
     const lengthPlusWidthFinal = distance/2;
     let bestRoute = [];
     let bestRouteLength = 0;
+
+    const storedRoute = await retrieveSimilarRoute(lat, long, distance, variance);
+
+    if (storedRoute != -1) {
+        for (const pt of storedRoute.points) {
+            bestRoute.push([pt.lat, pt.long]);
+        }
+        return bestRoute;
+    }
 
     const randXShift = Math.random() - 0.5;
     const randYShift = Math.random() - 0.5;
@@ -270,11 +278,32 @@ function getEmbed(points) {
  * @param {*} long 
  * @param {*} distance 
  */
-async function retrieveSimilarRoute(lat, long, distance) {
-    // query DB for starting point + distance variation ~ 200m
-    // this is something we can store in the settings (choose variation)
-    // my plan is to get a fireStore (1gb of storage + pretty much enough r/w for us)
-    // call this before api request in queryDistance
+async function retrieveSimilarRoute(lat, long, distance, variance) {
+    // fixed error right now, same variance from before can get passed here
+    let ret = await dataBase.read(distance, 100);
+
+    // for now we will return the first route which is within 100 metres
+    // perhaps we can use same variance
+    for (const route of ret) {
+        for (const pt of route.points) {
+            const tempLat = pt.lat;
+            const tempLong = pt.long;
+            if (inBetween(lat - 100*meterToLat, lat + 100*meterToLat, tempLat) 
+                && inBetween(long - 100*meterToLat, long + 100*meterToLat, tempLong)) {
+                return {
+                    distance: distance,
+                    points: route.points 
+                }
+            }
+        }
+    }
+
+    return -1;
+
+}
+
+function inBetween(left, right, center) {
+    return center >= left && center <= right;
 }
 
 module.exports = {
