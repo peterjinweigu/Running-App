@@ -280,7 +280,8 @@ function getEmbed(points) {
  */
 async function retrieveSimilarRoute(lat, long, distance, variance) {
     // fixed error right now, same variance from before can get passed here
-    let ret = await dataBase.read(distance, 100);
+    let offset = 200*(1 - variance);
+    let ret = await dataBase.read(distance, offset);
 
     // for now we will return the first route which is within 100 metres
     // perhaps we can use same variance
@@ -288,8 +289,8 @@ async function retrieveSimilarRoute(lat, long, distance, variance) {
         for (const pt of route.points) {
             const tempLat = pt.lat;
             const tempLong = pt.long;
-            if (inBetween(lat - 100*meterToLat, lat + 100*meterToLat, tempLat) 
-                && inBetween(long - 100*meterToLat, long + 100*meterToLat, tempLong)) {
+            if (inBetween(lat - offset*meterToLat, lat + offset*meterToLat, tempLat) 
+                && inBetween(long - offset*meterToLat, long + offset*meterToLat, tempLong)) {
                 return {
                     distance: distance,
                     points: route.points 

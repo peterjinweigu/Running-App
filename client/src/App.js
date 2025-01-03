@@ -5,6 +5,7 @@ import logo from './assets/runner.png';
 
 // For allowing user to enter distance
 export const DistanceContext = createContext();
+export const VarianceContext = createContext();
 
 export const DistanceProvider = ({ children }) => {
   const [distance, setDistance] = useState(5000);
@@ -13,6 +14,16 @@ export const DistanceProvider = ({ children }) => {
     <DistanceContext.Provider value={{ distance, setDistance }}>
       {children}
     </DistanceContext.Provider>
+  );
+};
+
+export const VarianceProvider = ({ children }) => {
+  const [variance, setVariance] = useState(0);
+
+  return (
+    <VarianceContext.Provider value={{ variance, setVariance }}>
+      {children}
+    </VarianceContext.Provider>
   );
 };
 
@@ -30,7 +41,9 @@ function StartMenu() {
 
 function ConfigMenu() {
   const { distance, setDistance } = useContext(DistanceContext);
-  const [isPopupVisible, setPopupVisible] = useState(false);
+  const { variance, setVariance } = useContext(VarianceContext);
+  const [isDistancePopupVisible, setDistancePopupVisible] = useState(false);
+  const [isVariancePopupVisible, setVariancePopupVisible] = useState(false);
   // Set all buttons to equal width (equal to longest button)
   // useEffect(() => {
   //   const buttons = document.querySelectorAll('.config-button');
@@ -50,16 +63,29 @@ function ConfigMenu() {
   // }, []);
 
   const enterDistance = () => {
-    setPopupVisible(true);
+    setDistancePopupVisible(true);
+  };
+
+  const enterVariance = () => {
+    setVariancePopupVisible(true);
   };
 
   const handleDistanceChange = (e) => {
     setDistance(e.target.value);
   };
 
-  const handleSubmit = () => {
+  const handleVarianceChange = (e) => {
+    setVariance(e.target.value);
+  };
+
+  const handleDistanceSubmit = () => {
     console.log('Entered distance:', distance);
-    setPopupVisible(false);
+    setDistancePopupVisible(false);
+  };
+
+  const handleVarianceSubmit = () => {
+    console.log('Entered variance:', variance);
+    setVariancePopupVisible(false);
   };
   
   const enterSettings = () => {
@@ -74,7 +100,7 @@ function ConfigMenu() {
       <div>
       <button className="config-button" onClick={ enterDistance }>Distance</button>
       
-      {isPopupVisible && (
+      {isDistancePopupVisible && (
         <div className="popup-overlay">
           <div className="popup-content">
             <p>Enter Distance (m)</p>
@@ -84,7 +110,25 @@ function ConfigMenu() {
               onChange={ handleDistanceChange }
               placeholder="Enter distance"
             />
-            <button className="popup-button" onClick={ handleSubmit }>Ok</button>
+            <button className="popup-button" onClick={ handleDistanceSubmit }>Ok</button>
+          </div>
+        </div>
+      )}
+      </div>
+      <div>
+      <button className="config-button" onClick={ enterVariance }>Variance</button>
+      
+      {isVariancePopupVisible && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <p>Enter Variance (0-1)</p>
+            <input
+              type="text"
+              value={variance}
+              onChange={ handleVarianceChange }
+              placeholder="Enter variance"
+            />
+            <button className="popup-button" onClick={ handleVarianceSubmit }>Ok</button>
           </div>
         </div>
       )}
@@ -100,6 +144,7 @@ const MapEmbed = () => {
   const [error, setError] = useState(false);
   const [loadingText, setLoadingText] = useState('generating path');
   const { distance } = useContext(DistanceContext);
+  const { variance } = useContext(VarianceContext);
 
   useEffect(() => {
     async function getEmbed() {
@@ -121,7 +166,8 @@ const MapEmbed = () => {
         //await new Promise((resolve) => setTimeout(resolve, 3000)); // mock api call
         var { latitude, longitude } = await getLocation(); 
 
-        const response = await fetch(`http://localhost:4000/api/${latitude}/${longitude}/${distance}`, {method: 'get'});
+        const response = await fetch(
+          `http://localhost:4000/api/${latitude}/${longitude}/${distance}/${variance}`, {method: 'get'});
         const data = await response.json();
         if (!flag) {
           setEmbed(data.embed);
@@ -139,7 +185,7 @@ const MapEmbed = () => {
     return () => {
       flag = true;
     }
-  }, [distance]);
+  }, [distance, variance]);
 
   // // Animated loading text
   useEffect(() => {

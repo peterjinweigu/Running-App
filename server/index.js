@@ -10,12 +10,13 @@ const app = express();
 
 app.use(cors({origin:true, credentials:true}));
 
-app.get("/api/:lat/:long/:distance", async (req, res) => {
+app.get("/api/:lat/:long/:distance/:variance", async (req, res) => {
   var lat = parseFloat(req.params.lat);
   var long = parseFloat(req.params.long);
   var distance = parseFloat(req.params.distance);
+  var variance = parseFloat(req.params.variance);
   
-  const pts = await algo.getRoute(lat, long, distance, 0);
+  const pts = await algo.getRoute(lat, long, distance, variance);
 
   ret = algo.getEmbed(pts);
 
